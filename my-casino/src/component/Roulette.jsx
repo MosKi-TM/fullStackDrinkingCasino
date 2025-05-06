@@ -103,49 +103,6 @@ export default function Roulette() {
 
   return (
   <div className='game-wrapper'>
-    {rollResult && (
-  <div className="results-container">
-    <div style={{display: 'flex', alignItems:'center', justifyContent:'center', margin:'20px'}}>
-              <span style={{ fontSize: '30px' }}>Resultats: </span>{' '}
-                <div className={`card ${winning_color[rollResult.color]}`}>
-                  {rollResult.value}
-                </div>
-    </div>
-    <div className='result-wrapper'>
-      <div className="results-section winners">
-        <h3 style={{color:'lightgreen'}}>🏆 Gagnants</h3>
-        {winners.length > 0 ? (
-          winners.map((winner, index) => (
-            <div key={index}>
-              <span style={{ fontSize: '16px' }}>{winner.name}: </span>{' '}
-              <span style={{ fontSize: '20px',  color:'rgb(0, 138, 14)' }}>{winner.mise}</span>{' '}
-              <span style={{ fontSize: '16px' }}> gorgées à donner</span>
-            </div>
-          ))
-        ) : (
-          <p style={{color:'lightgreen'}} >No winners this round.</p>
-        )}
-      </div>
-
-      <div className="results-section losers">
-        <h3 style={{color:'red'}} >💀 Victimes</h3>
-        {losers.length > 0 ? (
-          losers.map((loser, index) => (
-            <div key={index}>
-              <span style={{ fontSize: '16px' }}>{loser.name}: </span>{' '}
-              <span style={{ fontSize: '20px', color:'rgb(160, 7, 7)' }}>{loser.mise}</span>{' '}
-              <span style={{ fontSize: '16px' }}> gorgées à boire</span>
-
-            </div>
-          ))
-        ) : (
-          <p style={{color:'red'}}>No losers this round.</p>
-        )}
-      </div>
-    </div>
-  </div>
-)}
-
     <div className="roulette-wrapper">
       <div className="selector"></div>
       <div className="wheel">
