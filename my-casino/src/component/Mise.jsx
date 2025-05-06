@@ -1,11 +1,12 @@
 import './Mise.css';
 import { useState } from 'react';
-import { sendMise } from '../apiUsage';
+import { sendMise, spinRoulette } from '../apiUsage';
 
 export default function Mise() {
   const [response, setResponse] = useState('');
   const [username, setUsername] = useState('');
   const [mise, setMise] = useState(0); // numeric state
+  const [admin, setAdmin] = useState(false);
 
   const handleSend = (color) => {
     if (!username || mise <= 0) {
@@ -18,6 +19,7 @@ export default function Mise() {
       mise: mise,
       couleur: color,
     });
+    setMise(0);
   };
 
   const addToMise = (amount) => {
@@ -30,7 +32,14 @@ export default function Mise() {
         type="text"
         placeholder="Enter username"
         value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        onChange={(e) => {
+            setUsername(e.target.value)
+            if(e.target.value == 'admin'){
+                setAdmin(true);
+            }else{
+                setAdmin(false);
+            }
+        }}
       />
 
       <div className="mise-controls">
@@ -43,6 +52,10 @@ export default function Mise() {
       <button onClick={() => handleSend('red')}>Rouge</button>
       <button onClick={() => handleSend('green')}>Vert</button>
       <button onClick={() => handleSend('blue')}>Bleu</button>
+
+      {admin && <div className="mise-controls">
+        <button onClick={spinRoulette}>Spin Roulette</button>
+      </div>}
 
       <p>{response}</p>
     </div>

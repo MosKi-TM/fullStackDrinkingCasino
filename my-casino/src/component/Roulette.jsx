@@ -5,27 +5,35 @@ export default function Roulette() {
   const rowRef = useRef(null);
   const [bets, setBets] = useState({ red: [], green: [], blue: [] });
 
+  const [winners, setWinners] = useState([]);
+  const [losers, setLosers] = useState([]);
+  const [rollResult, setRollResult] = useState(null);
+  const [pendingRollData, setPendingRollData] = useState(null);
+
+
   useEffect(() => {
     const socket = new WebSocket('ws://localhost:4000');
 
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-
+      console.log(data)
       // Handle the roll message (spin result)
       if (data.type === 'roll') {
-        spinWheel(data.value);
+        spinWheel(data.value, data);
+        
       }
 
       // Handle the bets update message
       if (data.type === 'bets') {
         setBets(data.bets); // Update the bets state when a new bet is placed
+        console.log(data)
       }
     };
 
     return () => socket.close(); // Clean up the WebSocket connection
   }, []);
 
-  const spinWheel = (roll) => {
+  const spinWheel = (roll, data) => {
     const order = [0, 11, 5, 10, 6, 9, 7, 8, 1, 14, 2, 13, 3, 12, 4];
     const position = order.indexOf(roll);
 
@@ -52,7 +60,14 @@ export default function Roulette() {
         row.style.transitionDuration = '';
         const resetTo = -(position * cardWidth + randomize);
         row.style.transform = `translate3d(${resetTo}px, 0, 0)`;
-      }, 6000);
+        console.log('update winners')
+          setWinners(data.winners || []);
+          setLosers(data.losers || []);
+          setRollResult({
+            value: data.value,
+            color: data.color
+          });
+        }, 6000);
     }
   };
 
@@ -77,6 +92,38 @@ export default function Roulette() {
   const repeatedCards = Array.from({ length: 29 }, () => cards).flat();
 
   return (<>
+    {rollResult && (
+  <div className="results-container">
+    <h2>🎯 Roll Result: {rollResult.value} ({rollResult.color})</h2>
+
+    <div className="results-section winners">
+      <h3>🏆 Winners</h3>
+      {winners.length > 0 ? (
+        winners.map((winner, index) => (
+          <div key={index}>
+            <strong>{winner.name}</strong>: {winner.mise} gorgées a distribuer
+          </div>
+        ))
+      ) : (
+        <p>No winners this round.</p>
+      )}
+    </div>
+
+    <div className="results-section losers">
+      <h3>💀 Losers</h3>
+      {losers.length > 0 ? (
+        losers.map((loser, index) => (
+          <div key={index}>
+            <strong>{loser.name}</strong>: {loser.mise} gorgées a boire
+          </div>
+        ))
+      ) : (
+        <p>No losers this round.</p>
+      )}
+    </div>
+  </div>
+)}
+
     <div className="roulette-wrapper">
       <div className="selector"></div>
       <div className="wheel">
