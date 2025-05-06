@@ -1,0 +1,86 @@
+.mise-wrapper {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background: radial-gradient(circle at top, #111 0%, #222 100%);
+    border-radius: 15px;
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+    color: #fff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+  }
+  
+  .mise-wrapper input[type="text"] {
+    width: 80%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    margin-bottom: 20px;
+    font-size: 16px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    outline: none;
+  }
+  
+  .mise-controls {
+    margin-bottom: 20px;
+  }
+  
+  .mise-controls p {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #ffd700;
+  }
+  
+  .mise-controls button {
+    margin: 5px;
+    padding: 10px 15px;
+    background: #444;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .mise-controls button:hover {
+    background: #ffd700;
+    color: #111;
+    transform: scale(1.1);
+  }
+  
+  button {
+    margin: 5px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    color: #fff;
+  }
+  
+  button:nth-of-type(1) {
+    background: crimson;
+  }
+  button:nth-of-type(2) {
+    background: green;
+  }
+  button:nth-of-type(3) {
+    background: royalblue;
+  }
+  
+  button:hover {
+    opacity: 0.85;
+    transform: scale(1.05);
+  }
+  
+  p {
+    margin-top: 20px;
+    font-size: 16px;
+    color: #0f0;
+  }
+  

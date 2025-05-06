@@ -1,60 +1,162 @@
+/* Main roulette wrapper */
+.roulette-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  background-color: rgba(4, 0, 30, 0.4);
+  border-radius: 30px;
+  padding: 15px;
+  flex-direction: column;
+  align-items: center;
+}
 
-  .roulette-wrapper{
-    position:relative;
-    display:flex;
-    justify-content:center;
-    width:100%;
-    margin:0 auto;
-    overflow:hidden;
-    background-color: rgba(4, 0, 30,0.4);
-    border-radius: 30px;
+/* Selector line in the center of the wheel */
+.roulette-wrapper .selector {
+  width: 3px;
+  background: grey;
+  left: 50%;
+  height: 100%;
+  transform: translate(-50%, 0%);
+  position: absolute;
+  z-index: 2;
+}
+
+/* The wheel itself */
+.roulette-wrapper .wheel {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px; /* Space between the wheel and the bet container */
+}
+
+/* Row containing the cards */
+.roulette-wrapper .wheel .row {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+/* Card design */
+.roulette-wrapper .wheel .row .card {
+  height: 75px;
+  width: 75px;
+  margin: 3px;
+  border-radius: 8px;
+  border-bottom: 3px solid rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5em;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+}
+
+/* Card color styles */
+.card.red {
+  background: #F95146;
+}
+
+.card.black {
+  background: #2D3035;
+}
+
+.card.green {
+  background: #00C74D;
+}
+
+/* Global reset for padding/margins */
+* {
+  box-sizing: border-box;
+}
+
+/* BET CONTAINER - Adding styling for the bet display */
+.bets-container {
+  margin-top: 30px;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  gap: 15px;
+  flex-wrap: wrap;
+  padding: 10px 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
+}
+
+.bet-box {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 10px;
+  color: #fff;
+  width: 28%;
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.bet-box.red {
+  background-color: rgba(255, 0, 0, 0.3);
+}
+
+.bet-box.green {
+  background-color: rgba(0, 255, 0, 0.3);
+}
+
+.bet-box.blue {
+  background-color: rgba(0, 0, 255, 0.3);
+}
+
+.bet-box h3 {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.bet-item {
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.bet-item span {
+  font-weight: bold;
+}
+
+/* Styling for the Spin button */
+.spin-button {
+  margin-top: 40px;
+  padding: 12px 30px;
+  background-color: #ff5722;
+  color: #fff;
+  border-radius: 25px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 0 10px rgba(255, 87, 34, 0.6);
+}
+
+.spin-button:hover {
+  background-color: #e64a19;
+}
+
+/* For mobile responsiveness */
+@media (max-width: 768px) {
+  .bets-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .bet-box {
+    width: 80%;
+    margin-bottom: 10px;
+  }
+
+  .spin-button {
+    width: 100%;
     padding: 15px;
   }
-  
-  .roulette-wrapper .selector{
-    width:3px;
-    background:grey;
-    left:50%;
-    height:100%;
-    transform:translate(-50%,0%);
-    position:absolute;
-    z-index:2;
-  }
-  
-  .roulette-wrapper .wheel{
-    display:flex;
-  }
-  
-  .roulette-wrapper .wheel .row{
-    display:flex;
-  }
-  
-  .roulette-wrapper .wheel .row .card{
-    height:75px;
-    width:75px;
-    margin:3px;
-    border-radius:8px;
-    border-bottom:3px solid rgba(0,0,0,0.2);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:white;
-    font-size:1.5em;
-  }
-  
-  .card.red{
-    background:#F95146;
-  }
-  
-  .card.black{
-    background:#2D3035;
-  }
-  
-  .card.green{
-    background:#00C74D;
-  }
-  
-  *{
-    box-sizing:border-box;
-  }
-  
+}

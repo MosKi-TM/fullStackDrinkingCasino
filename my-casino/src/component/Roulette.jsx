@@ -1,31 +1,28 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import './Roulette.css';
 
 export default function Roulette() {
   const rowRef = useRef(null);
+  const [bets, setBets] = useState({ red: [], green: [], blue: [] });
 
   useEffect(() => {
-    const row = rowRef.current;
-    if (row) {
-      const cardWidth = 75 + 3 * 2;
-      const cardsPerSet = 15;
-      const middleIndex = 6;
-      const baseOffset = middleIndex * cardsPerSet * cardWidth;
-      row.style.transform = `translate3d(-${baseOffset}px, 0, 0)`;
-    }
-  
     const socket = new WebSocket('ws://localhost:4000');
-  
+
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
+
+      // Handle the roll message (spin result)
       if (data.type === 'roll') {
-        console.log(data.value)
         spinWheel(data.value);
-        
+      }
+
+      // Handle the bets update message
+      if (data.type === 'bets') {
+        setBets(data.bets); // Update the bets state when a new bet is placed
       }
     };
-  
-    return () => socket.close();
+
+    return () => socket.close(); // Clean up the WebSocket connection
   }, []);
 
   const spinWheel = (roll) => {
@@ -59,12 +56,6 @@ export default function Roulette() {
     }
   };
 
-  const handleSpin = () => {
-    const randomRoll = Math.floor(Math.random() * 15);
-    console.log(randomRoll)
-    spinWheel(randomRoll);
-  };
-
   const cards = [
     { number: 1, color: 'red' },
     { number: 14, color: 'black' },
@@ -85,12 +76,11 @@ export default function Roulette() {
 
   const repeatedCards = Array.from({ length: 29 }, () => cards).flat();
 
-  return (
-    <>
-    <div className='roulette-wrapper'>
-      <div className='selector'></div>
-      <div className='wheel'>
-        <div className='row' ref={rowRef}>
+  return (<>
+    <div className="roulette-wrapper">
+      <div className="selector"></div>
+      <div className="wheel">
+        <div className="row" ref={rowRef}>
           {repeatedCards.map((card, index) => (
             <div key={index} className={`card ${card.color}`}>
               {card.number}
@@ -98,9 +88,26 @@ export default function Roulette() {
           ))}
         </div>
       </div>
+
       
     </div>
-    <button onClick={handleSpin}>Spin</button>
+    {/* Display the bets */}
+    <div className="bets-container">
+        {['red', 'green', 'blue'].map((color) => (
+          <div key={color} className={`bet-box ${color}`}>
+            <h3>{color.charAt(0).toUpperCase() + color.slice(1)} Bets</h3>
+            {bets[color].length === 0 ? (
+              <p>No bets placed yet!</p>
+            ) : (
+              bets[color].map((bet, index) => (
+                <div key={index} className="bet-item">
+                  <span>{bet.name}</span>: <span>{bet.mise} gorgées</span>
+                </div>
+              ))
+            )}
+          </div>
+        ))}
+      </div>
     </>
   );
 }
