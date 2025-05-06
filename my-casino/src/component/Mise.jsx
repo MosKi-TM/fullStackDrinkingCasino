@@ -2,11 +2,9 @@ import './Mise.css';
 import { useState } from 'react';
 import { sendMise, spinRoulette } from '../apiUsage';
 
-export default function Mise() {
+export default function Mise({username, admin}) {
   const [response, setResponse] = useState('');
-  const [username, setUsername] = useState('');
   const [mise, setMise] = useState(0); // numeric state
-  const [admin, setAdmin] = useState(false);
 
   const handleSend = (color) => {
     if (!username || mise <= 0) {
@@ -28,20 +26,6 @@ export default function Mise() {
 
   return (
     <div className='mise-wrapper'>
-      <input
-        type="text"
-        placeholder="Enter username"
-        value={username}
-        onChange={(e) => {
-            setUsername(e.target.value)
-            if(e.target.value == 'admin'){
-                setAdmin(true);
-            }else{
-                setAdmin(false);
-            }
-        }}
-      />
-
       <div className="mise-controls">
         <p>Mise: {mise}</p>
         <button onClick={() => addToMise(1)}>+1</button>

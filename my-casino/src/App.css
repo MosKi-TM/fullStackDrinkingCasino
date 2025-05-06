@@ -9,6 +9,19 @@ body{
   background-color: rgb(1, 0, 15);
 }
 
+.userName {
+  width: 80%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  margin-bottom: 20px;
+  font-size: 16px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  outline: none;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
