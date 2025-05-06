@@ -11,7 +11,9 @@ function App() {
   const [ws, setWs] = useState(null);
 
    useEffect(() => {
-        const socket = new WebSocket('ws://localhost:4000');
+        //const socket = new WebSocket('ws://localhost:4000');
+
+        const socket = new WebSocket('wss://fullstackdrinkingcasino-backend.onrender.com');
         setWs(socket);
 
         socket.onopen = () => {
