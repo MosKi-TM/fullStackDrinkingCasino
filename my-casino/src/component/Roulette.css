@@ -6,13 +6,13 @@
   width: 100%;
   margin: 0 auto;
   overflow: hidden;
-  background-color: #1B3A4B;
+  background-color: #1e6b1e;
   border-radius: 40px;
   padding: 0px 30px 30px 30px;
   flex-direction: column;
   align-items: center;
   border: 3px solid;
-  border-color: #006466;
+  border-color: #FFFFFF;
 }
 
 /* Selector line in the center of the wheel */
@@ -81,10 +81,7 @@
   gap: 15px;
   flex-wrap: wrap;
   padding: 10px 0;
-  background-color: #1B3A4B;
   border-radius: 40px;
-  border: 3px solid;
-  border-color: #006466;
 }
 
 .bet-box {
@@ -198,11 +195,11 @@
 }
 
 .results-section.winners, .results-section.losers{
-  background-color: #1B3A4B;
+  background-color: #1e6b1e;
   border-radius: 30px;
   border: 3px solid;
   width: 45%;
-  border-color: #006466;
+  border-color: #ffffff;
 }
 
 .gorgee{
@@ -214,11 +211,11 @@
 }
 
 .results-container h2{
-  color: #4aa6f8;
+  color: #6fff5f;
 }
 
 .results-container{
-  color: #4aa6f8;
+  color: #6fff5f;
 }
 
 .game-wrapper{

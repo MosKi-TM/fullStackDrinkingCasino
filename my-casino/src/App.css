@@ -11,7 +11,9 @@ body {
   font-optical-sizing: auto;
   font-weight: 700;
   font-style: normal;
-  background-color: #212F45;
+  background: #144C18;
+  background-size: cover;
+
 }
 
 .userName {

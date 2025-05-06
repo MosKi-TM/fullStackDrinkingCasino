@@ -107,13 +107,13 @@ export default function Roulette() {
   <div className="results-container">
     <div style={{display: 'flex', alignItems:'center', justifyContent:'center', margin:'20px'}}>
               <span style={{ fontSize: '30px' }}>Resultats: </span>{' '}
-                <div className={`card ${rollResult.color}`}>
+                <div className={`card ${winning_color[rollResult.color]}`}>
                   {rollResult.value}
                 </div>
     </div>
     <div className='result-wrapper'>
       <div className="results-section winners">
-        <h3 style={{color:'green'}}>🏆 Gagnants</h3>
+        <h3 style={{color:'lightgreen'}}>🏆 Gagnants</h3>
         {winners.length > 0 ? (
           winners.map((winner, index) => (
             <div key={index}>
@@ -123,7 +123,7 @@ export default function Roulette() {
             </div>
           ))
         ) : (
-          <p style={{color:'green'}} >No winners this round.</p>
+          <p style={{color:'lightgreen'}} >No winners this round.</p>
         )}
       </div>
 
