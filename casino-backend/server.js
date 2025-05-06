@@ -2,14 +2,20 @@ const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
 const cors = require('cors');
+const { readBets, writeBets } = require('./storage');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+const wss = new WebSocket.Server({ noServer: true });
 
+server.on('upgrade', (request, socket, head) => {
+  wss.handleUpgrade(request, socket, head, (ws) => {
+    wss.emit('connection', ws, request);
+  });
+});
 // Initialize bets object for red, green, and blue colors
 let bets = {
   red: [],
@@ -19,20 +25,18 @@ let bets = {
 
 // Helper function to broadcast updated bets to all WebSocket clients
 function broadcastBets() {
-  const message = JSON.stringify({
-    type: 'bets',
-    bets,
-  });
-
+  const bets = readBets();
+  const message = JSON.stringify({ type: 'bets', bets });
+  console.log(bets);
   wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
       client.send(message);
     }
   });
 }
-
 // Helper function to broadcast roulette roll result along with winners and losers
 function broadcastRoll() {
+  const bets = readBets();
   const roll = Math.floor(Math.random() * 15); // Random number between 0 and 14
   const rollColor = determineColor(roll);
   
@@ -83,13 +87,7 @@ function broadcastRoll() {
   });
 
   // Reset the bets after the round
-  bets = {
-    red: [],
-    green: [],
-    blue: [],
-  };
-
-  // Broadcast the reset bets to clients after 6 seconds (to show the round outcome)
+  writeBets({ red: [], green: [], blue: [] });
   setTimeout(broadcastBets, 6000);
 }
 
@@ -129,22 +127,17 @@ wss.on('connection', (ws) => {
 app.post('/mise', (req, res) => {
   const { name, mise, couleur } = req.body;
 
-  // Validate the request body
   if (!name || !mise || !couleur) {
     return res.status(400).json({ message: 'Invalid data, please include name, mise, and couleur.' });
   }
 
-  // Validate the color
   if (!['red', 'green', 'blue'].includes(couleur)) {
-    return res.status(400).json({ message: 'Invalid color. Please choose between red, green, or blue.' });
+    return res.status(400).json({ message: 'Invalid color.' });
   }
 
-  console.log(`New bet: ${name} bet ${mise} on ${couleur}`);
-
-  // Add the bet to the appropriate color
+  const bets = readBets();
   bets[couleur].push({ name, mise });
-
-  // Broadcast the updated bets to all WebSocket clients
+  writeBets(bets);
   broadcastBets();
 
   return res.json({ message: 'Mise bien reçu', data: { name, mise, couleur } });
