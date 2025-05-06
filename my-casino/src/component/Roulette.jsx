@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import './Roulette.css';
+import WinningBoard from './WinningBoard';
 
 const avatarColors = {};
 
@@ -11,7 +12,7 @@ const getRandomColor = () => {
 const frcolor = {red:'Rouge', green:'Vert', blue:'Noir'}
 const winning_color = {red:'red', green:'green', blue:'black'}
 
-export default function Roulette() {
+export default function Roulette({socket}) {
   const rowRef = useRef(null);
   const [bets, setBets] = useState({ red: [], green: [], blue: [] });
 
@@ -19,18 +20,16 @@ export default function Roulette() {
   const [losers, setLosers] = useState([]);
   const [rollResult, setRollResult] = useState(null);
   const [pendingRollData, setPendingRollData] = useState(null);
+  const [drinkResults, setDrinkResults] = useState({});
 
   useEffect(() => {
-    const socket = new WebSocket('wss://fullstackdrinkingcasino-backend.onrender.com/');
-
-
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       console.log(data)
       // Handle the roll message (spin result)
       if (data.type === 'roll') {
         spinWheel(data.value, data);
-        
+        setDrinkResults({});
       }
 
       // Handle the bets update message
@@ -38,10 +37,17 @@ export default function Roulette() {
         setBets(data.bets); // Update the bets state when a new bet is placed
         console.log(data)
       }
+
+      if (data.type === 'drinking') {
+        console.log()
+        console.log(data.scoreboard)
+        setDrinkResults(data.scoreboard || {});
+        console.log(drinkResults);
+      }
     };
 
-    return () => socket.close(); // Clean up the WebSocket connection
-  }, []);
+    //return () => socket.close(); // Clean up the WebSocket connection
+  }, [socket]);
 
   const spinWheel = (roll, data) => {
     const order = [0, 11, 5, 10, 6, 9, 7, 8, 1, 14, 2, 13, 3, 12, 4];
@@ -103,6 +109,8 @@ export default function Roulette() {
 
   return (
   <div className='game-wrapper'>
+    {Object.keys(drinkResults).length > 0 && <WinningBoard drinkData={drinkResults} />}
+
     <div className="roulette-wrapper">
       <div className="selector"></div>
       <div className="wheel">

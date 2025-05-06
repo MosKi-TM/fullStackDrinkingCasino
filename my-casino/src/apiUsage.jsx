@@ -1,5 +1,5 @@
-const BASE_URL = `https://fullstackdrinkingcasino-backend.onrender.com`;
-
+//const BASE_URL = `https://fullstackdrinkingcasino-backend.onrender.com`;
+const BASE_URL = `http://localhost:4000`;
 const sendMise = async (response, setResponse, { name, mise, couleur }) => {
   const payload = { name, mise, couleur };
 
@@ -25,8 +25,8 @@ const spinRoulette = async () => {
     const res = await fetch(`${BASE_URL}/spin`);
     const data = await res.json();
 
-    spinWheel(data.value); // Start animation
-    setPendingRollData(data); // Delay update until animation ends
+    //spinWheel(data.value); // Start animation
+    //setPendingRollData(data); // Delay update until animation ends
   } catch (err) {
     console.error('Error fetching spin result:', err);
   }

@@ -84,3 +84,34 @@
     color: #0f0;
   }
   
+  .popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .popup-window {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  }
+  
+  .popup-window h3 {
+    color:#111;
+    margin-bottom: 1rem;
+  }
+  
+  .popup-window button {
+    margin: 0.5rem;
+    padding: 0.5rem 1rem;
+  }
+  

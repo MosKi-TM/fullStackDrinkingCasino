@@ -2,7 +2,7 @@ const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
 const cors = require('cors');
-const { readBets, writeBets } = require('./storage');
+const { readBets, writeBets, saveData, loadData } = require('./storage');
 
 const app = express();
 app.use(cors());
@@ -16,12 +16,20 @@ server.on('upgrade', (request, socket, head) => {
     wss.emit('connection', ws, request);
   });
 });
+
 // Initialize bets object for red, green, and blue colors
 let bets = {
   red: [],
   green: [],
   blue: [],
 };
+
+// Store pending selections
+let pendingSelections = {};
+let users = {}; // To track users by socket.id
+let clients = {};
+
+let storedData = loadData();
 
 // Helper function to broadcast updated bets to all WebSocket clients
 function broadcastBets() {
@@ -34,7 +42,8 @@ function broadcastBets() {
     }
   });
 }
-// Helper function to broadcast roulette roll result along with winners and losers
+
+// Function to broadcast roulette roll result along with winners and losers
 function broadcastRoll() {
   const bets = readBets();
   const roll = Math.floor(Math.random() * 15); // Random number between 0 and 14
@@ -47,12 +56,11 @@ function broadcastRoll() {
     blue: bets.blue.filter(bet => bet.mise > 0),
   };
   
-  
-  // Determine winners and losers
+  // Determine winners
   const winners = mises[rollColor].map(bet => ({
     name: bet.name,
-    mise: rollColor === 'green' ? bet.mise * 8 : bet.mise*2,
-    couleur: rollColor
+    mise: rollColor === 'green' ? bet.mise * 8 : bet.mise * 2,
+    couleur: rollColor,
   }));
 
   // Collect losers (everyone who didn't bet on the winning color)
@@ -63,13 +71,11 @@ function broadcastRoll() {
         losers.push({
           name: bet.name,
           mise: color === 'green' ? bet.mise * 6 : bet.mise,
-          couleur: color
+          couleur: color,
         });
       });
     }
   });
-  
-  
 
   // Broadcast the roll and results
   const message = JSON.stringify({
@@ -85,6 +91,60 @@ function broadcastRoll() {
       client.send(message);
     }
   });
+
+
+  setTimeout(() => {
+    winners.forEach(winner => {
+      const client = storedData.clients[winner.name]; // Assuming `clients` is a map of connected clients
+      
+      if (client) {
+        console.log('client send win');
+  
+        // Create a set to collect unique player names who have placed bets
+        const playerSet = new Set();
+        
+        // Filter out bets with mise > 0 for each color and add the names to the set
+        Object.keys(mises).forEach(color => {
+          mises[color].forEach(bet => {
+            playerSet.add(bet.name); // Use Set to ensure names are unique
+          });
+        });
+        // Convert the set to an array for the player list
+        const playerList = Array.from(playerSet);
+  
+        // Send the player list to the client
+        client.send(JSON.stringify({ type: 'select_recipient', playerList }));
+  
+        // Clear pending selection for the winner
+        storedData.pendingSelections[winner.name] = null;
+  
+        // Save updated data to storage
+        saveData(storedData);
+      }
+    });
+  }, 6000);
+
+  // Wait 15 seconds, then send result
+  setTimeout(() => {
+    const scoreboard = {};
+
+    for (const winner of winners) {
+      const selected = storedData.pendingSelections[winner.name];
+      if (selected) {
+        scoreboard[selected] = (scoreboard[selected] || 0) + winner.mise;
+      } else {
+        // fallback: give drinks to yourself if no selection
+        scoreboard[winner.name] = (scoreboard[winner.name] || 0) + winner.mise;
+      }
+    }
+
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify({ type: 'drinking', scoreboard }));
+      }
+    });
+
+  }, 15000);
 
   // Reset the bets after the round
   writeBets({ red: [], green: [], blue: [] });
@@ -122,7 +182,37 @@ wss.on('connection', (ws) => {
 
   // Send current bets to the new client
   ws.send(JSON.stringify({ type: 'bets', bets }));
+
+   // You can assign socket ID directly to the WebSocket instance
+  const socketId = ws._socket.remoteAddress + ':' + ws._socket.remotePort;
+
+  // When the client sends a message to set the username
+  ws.on('message', (message) => {
+      const data = JSON.parse(message);
+
+      if (data.type === 'set-username') {
+          storedData.users[data.username] = socketId; // Store the username
+          storedData.clients[data.username] = ws;
+          saveData(storedData);
+          console.log(`Username set for ${socketId}: ${data.username}`);
+      }
+
+      if (data.type === 'give_to') {
+        if(pendingSelections[data.from] == null)
+          storedData.pendingSelections[data.from] = data.to;
+        saveData(storedData);
+      }
+  });
+ 
+  // Handle disconnection
+  ws.on('close', () => {
+      console.log(`User disconnected: ${socketId}`);
+      delete storedData.clients[storedData.users[socketId]];
+      delete storedData.users[socketId]; // Clean up user info on disconnect
+      saveData(storedData); // Save the data after user disconnect
+  });
 });
+
 
 // Route for placing bets
 app.post('/mise', (req, res) => {
@@ -144,13 +234,10 @@ app.post('/mise', (req, res) => {
   return res.json({ message: 'Mise bien reçu', data: { name, mise, couleur } });
 });
 
-app.get('/spin',  (req, res) => {
-  broadcastRoll()
-  return res.json({ message: 'Spinning the wheel'});
-})
-
-// Simulate the roulette spin every 15 seconds
-//setInterval(broadcastRoll, 15000); // Roll every 15 seconds
+app.get('/spin', (req, res) => {
+  broadcastRoll();
+  return res.json({ message: 'Spinning the wheel' });
+});
 
 server.listen(4000, () => {
   console.log('Server running on http://localhost:4000');
