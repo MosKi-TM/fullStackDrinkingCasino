@@ -51,7 +51,7 @@ function broadcastRoll() {
   // Determine winners and losers
   const winners = mises[rollColor].map(bet => ({
     name: bet.name,
-    mise: bet.mise,
+    mise: rollColor === 'green' ? bet.mise * 8 : bet.mise*2,
     couleur: rollColor
   }));
 
@@ -62,7 +62,7 @@ function broadcastRoll() {
       mises[color].forEach(bet => {
         losers.push({
           name: bet.name,
-          mise: bet.mise,
+          mise: color === 'green' ? bet.mise * 6 : bet.mise,
           couleur: color
         });
       });
