@@ -1,4 +1,4 @@
-const BASE_URL = `http://localhost:4000`;
+const BASE_URL = `https://fullstackdrinkingcasino-backend.onrender.com`;
 
 const sendMise = async (response, setResponse, { name, mise, couleur }) => {
   const payload = { name, mise, couleur };

@@ -12,7 +12,7 @@ export default function Roulette() {
 
 
   useEffect(() => {
-    const socket = new WebSocket('ws://localhost:4000/');
+    const socket = new WebSocket('wss://fullstackdrinkingcasino-backend.onrender.com/');
 
 
     socket.onmessage = (event) => {
