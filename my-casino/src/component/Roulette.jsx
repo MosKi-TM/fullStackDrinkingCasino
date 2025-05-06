@@ -92,35 +92,42 @@ export default function Roulette() {
 
   const repeatedCards = Array.from({ length: 29 }, () => cards).flat();
 
-  return (<>
+  return (
+  <div className='game-wrapper'>
     {rollResult && (
   <div className="results-container">
     <h2>🎯 Roll Result: {rollResult.value} ({rollResult.color})</h2>
+    <div className='result-wrapper'>
+      <div className="results-section winners">
+        <h3>🏆 Winners</h3>
+        {winners.length > 0 ? (
+          winners.map((winner, index) => (
+            <div key={index}>
+              <span style={{ fontSize: '16px' }}>{winner.name}</span>{' '}
+              <span style={{ fontSize: '20px',  color:'rgb(0, 138, 14)' }}>{winner.mise}</span>{' '}
+              <span style={{ fontSize: '16px' }}> gorgées a boire</span>
+            </div>
+          ))
+        ) : (
+          <p>No winners this round.</p>
+        )}
+      </div>
 
-    <div className="results-section winners">
-      <h3>🏆 Winners</h3>
-      {winners.length > 0 ? (
-        winners.map((winner, index) => (
-          <div key={index}>
-            <strong>{winner.name}</strong>: {winner.mise} gorgées a distribuer
-          </div>
-        ))
-      ) : (
-        <p>No winners this round.</p>
-      )}
-    </div>
+      <div className="results-section losers">
+        <h3>💀 Losers</h3>
+        {losers.length > 0 ? (
+          losers.map((loser, index) => (
+            <div key={index}>
+              <span style={{ fontSize: '16px' }}>{loser.name}</span>{' '}
+              <span style={{ fontSize: '20px', color:'rgb(160, 7, 7)' }}>{loser.mise}</span>{' '}
+              <span style={{ fontSize: '16px' }}> gorgées a boire</span>
 
-    <div className="results-section losers">
-      <h3>💀 Losers</h3>
-      {losers.length > 0 ? (
-        losers.map((loser, index) => (
-          <div key={index}>
-            <strong>{loser.name}</strong>: {loser.mise} gorgées a boire
-          </div>
-        ))
-      ) : (
-        <p>No losers this round.</p>
-      )}
+            </div>
+          ))
+        ) : (
+          <p>No losers this round.</p>
+        )}
+      </div>
     </div>
   </div>
 )}
@@ -156,6 +163,6 @@ export default function Roulette() {
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 }

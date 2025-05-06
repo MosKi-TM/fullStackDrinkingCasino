@@ -6,11 +6,12 @@
   width: 100%;
   margin: 0 auto;
   overflow: hidden;
-  background-color: rgba(4, 0, 30, 0.4);
+  background-color: rgba(14, 5, 75, 0.4);
   border-radius: 30px;
-  padding: 15px;
+  padding: 0px 30px 30px 30px;
   flex-direction: column;
   align-items: center;
+  border: 2px solid;
 }
 
 /* Selector line in the center of the wheel */
@@ -100,21 +101,26 @@
 
 .bet-box.red {
   background-color: rgba(255, 0, 0, 0.3);
+  color:rgb(255, 73, 73);
 }
 
 .bet-box.green {
   background-color: rgba(0, 255, 0, 0.3);
+  color:rgb(44, 255, 44);
 }
 
 .bet-box.blue {
-  background-color: rgba(0, 0, 255, 0.3);
+  background-color: rgba(13, 13, 189, 0.3);
+  color:rgb(117, 117, 255);
 }
 
-.bet-box h3 {
-  font-size: 1.2em;
+.bet-box h3{
+  font-size: 30pt;
+  margin-top: 0;
   margin-bottom: 10px;
-  color: #fff;
 }
+
+
 
 .bet-item {
   font-size: 14px;
@@ -160,3 +166,33 @@
     padding: 15px;
   }
 }
+
+.result-wrapper{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  color: #4aa6f8;
+  background-color: rgba(0, 6, 55, 0.8);
+  border-radius: 45px;
+  border: 1px solid;
+  padding: 20px;
+}
+
+.gorgee{
+  font-size: 15pt;
+}
+
+.flex{
+  display: flex;
+}
+
+.results-container h2{
+  color: #4aa6f8;
+}
+
+.game-wrapper{
+  gap: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
