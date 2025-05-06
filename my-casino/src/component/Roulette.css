@@ -6,12 +6,13 @@
   width: 100%;
   margin: 0 auto;
   overflow: hidden;
-  background-color: rgba(14, 5, 75, 0.4);
-  border-radius: 30px;
+  background-color: #1B3A4B;
+  border-radius: 40px;
   padding: 0px 30px 30px 30px;
   flex-direction: column;
   align-items: center;
-  border: 2px solid;
+  border: 3px solid;
+  border-color: #006466;
 }
 
 /* Selector line in the center of the wheel */
@@ -39,7 +40,7 @@
 }
 
 /* Card design */
-.roulette-wrapper .wheel .row .card {
+.roulette-wrapper .wheel .row .card, .card {
   height: 75px;
   width: 75px;
   margin: 3px;
@@ -80,14 +81,15 @@
   gap: 15px;
   flex-wrap: wrap;
   padding: 10px 0;
-  background-color: rgba(0, 0, 0, 0.3);
-  border-radius: 20px;
-  box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
+  background-color: #1B3A4B;
+  border-radius: 40px;
+  border: 3px solid;
+  border-color: #006466;
 }
 
 .bet-box {
   background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
+  border-radius: 40px;
   padding: 10px;
   color: #fff;
   width: 28%;
@@ -95,13 +97,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  border: 3px solid;
 }
 
 .bet-box.red {
   background-color: rgba(255, 0, 0, 0.3);
   color:rgb(255, 73, 73);
+  
 }
 
 .bet-box.green {
@@ -110,8 +112,8 @@
 }
 
 .bet-box.blue {
-  background-color: rgba(13, 13, 189, 0.3);
-  color:rgb(117, 117, 255);
+  background-color: rgba(0, 0, 0, 0.3);
+  color:rgb(61, 61, 61);
 }
 
 .bet-box h3{
@@ -192,10 +194,15 @@
   flex-direction: row;
   justify-content: space-around;
   color: #4aa6f8;
-  background-color: rgba(0, 6, 55, 0.8);
-  border-radius: 45px;
-  border: 1px solid;
   padding: 20px;
+}
+
+.results-section.winners, .results-section.losers{
+  background-color: #1B3A4B;
+  border-radius: 30px;
+  border: 3px solid;
+  width: 45%;
+  border-color: #006466;
 }
 
 .gorgee{
@@ -210,9 +217,16 @@
   color: #4aa6f8;
 }
 
+.results-container{
+  color: #4aa6f8;
+}
+
 .game-wrapper{
   gap: 20px;
   display: flex;
   flex-direction: column;
 }
 
+.results-section h3{
+  margin-top: 5px;
+}

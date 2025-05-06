@@ -8,6 +8,9 @@ const getRandomColor = () => {
   return colors[Math.floor(Math.random() * colors.length)];
 };
 
+const frcolor = {red:'Rouge', green:'Vert', blue:'Noir'}
+const winning_color = {red:'red', green:'green', blue:'black'}
+
 export default function Roulette() {
   const rowRef = useRef(null);
   const [bets, setBets] = useState({ red: [], green: [], blue: [] });
@@ -102,16 +105,21 @@ export default function Roulette() {
   <div className='game-wrapper'>
     {rollResult && (
   <div className="results-container">
-    <h2>🎯 Roll Result: {rollResult.value} ({rollResult.color})</h2>
+    <div style={{display: 'flex', alignItems:'center', justifyContent:'center', margin:'20px'}}>
+              <span style={{ fontSize: '30px' }}>Resultats: </span>{' '}
+                <div className={`card ${rollResult.color}`}>
+                  {rollResult.value}
+                </div>
+    </div>
     <div className='result-wrapper'>
       <div className="results-section winners">
-        <h3 style={{color:'green'}}>🏆 Winners</h3>
+        <h3 style={{color:'green'}}>🏆 Gagnants</h3>
         {winners.length > 0 ? (
           winners.map((winner, index) => (
             <div key={index}>
-              <span style={{ fontSize: '16px' }}>{winner.name}</span>{' '}
+              <span style={{ fontSize: '16px' }}>{winner.name}: </span>{' '}
               <span style={{ fontSize: '20px',  color:'rgb(0, 138, 14)' }}>{winner.mise}</span>{' '}
-              <span style={{ fontSize: '16px' }}> gorgées a boire</span>
+              <span style={{ fontSize: '16px' }}> gorgées à donner</span>
             </div>
           ))
         ) : (
@@ -120,13 +128,13 @@ export default function Roulette() {
       </div>
 
       <div className="results-section losers">
-        <h3 style={{color:'red'}} >💀 Losers</h3>
+        <h3 style={{color:'red'}} >💀 Victimes</h3>
         {losers.length > 0 ? (
           losers.map((loser, index) => (
             <div key={index}>
-              <span style={{ fontSize: '16px' }}>{loser.name}</span>{' '}
+              <span style={{ fontSize: '16px' }}>{loser.name}: </span>{' '}
               <span style={{ fontSize: '20px', color:'rgb(160, 7, 7)' }}>{loser.mise}</span>{' '}
-              <span style={{ fontSize: '16px' }}> gorgées a boire</span>
+              <span style={{ fontSize: '16px' }}> gorgées à boire</span>
 
             </div>
           ))
@@ -156,7 +164,7 @@ export default function Roulette() {
     <div className="bets-container">
         {['red', 'green', 'blue'].map((color) => (
           <div key={color} className={`bet-box ${color}`}>
-            <h3>{color.charAt(0).toUpperCase() + color.slice(1)} Bets</h3>
+            <h3>Pari {frcolor[color]} </h3>
             {bets[color].length === 0 ? (
               <p>No bets placed yet!</p>
             ) : (

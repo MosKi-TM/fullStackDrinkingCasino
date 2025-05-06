@@ -35,7 +35,7 @@ export default function Mise({username, admin}) {
 
       <button onClick={() => handleSend('red')}>Rouge</button>
       <button onClick={() => handleSend('green')}>Vert</button>
-      <button onClick={() => handleSend('blue')}>Bleu</button>
+      <button onClick={() => handleSend('blue')}>Noir</button>
 
       {admin && <div className="mise-controls">
         <button onClick={spinRoulette}>Spin Roulette</button>
