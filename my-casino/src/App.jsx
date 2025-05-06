@@ -1,24 +1,35 @@
-import { useState } from 'react'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Updated imports
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import Roulette from './component/Roulette'
-import './App.css'
-import Mise from './component/Mise'
-
+import { useState } from 'react';
+import Roulette from './component/Roulette';
+import Mise from './component/Mise';
+import './App.css';
 
 function App() {
-  return (
-    <Router>
-      <div>
-        <Routes>
-          {/* Updated Route component for React Router v6 */}
-          <Route path="/" element={<Roulette />} />
+  const [activePage, setActivePage] = useState(null); // null = page d'accueil
 
-          <Route path="/mise" element={<Mise />} />
-        </Routes>
-      </div>
-    </Router>
+  return (
+    <div className="app-container">
+      {activePage === null && (
+        <div className="home">
+          <h1>Bienvenue au Casino</h1>
+          <button onClick={() => setActivePage('roulette')}>Accéder à la Roulette</button>
+          <button onClick={() => setActivePage('mise')}>Accéder à la Mise</button>
+        </div>
+      )}
+
+      {activePage === 'roulette' && (
+        <>
+          <button onClick={() => setActivePage(null)}>← Retour</button>
+          <Roulette />
+        </>
+      )}
+
+      {activePage === 'mise' && (
+        <>
+          <button onClick={() => setActivePage(null)}>← Retour</button>
+          <Mise />
+        </>
+      )}
+    </div>
   );
 }
 
