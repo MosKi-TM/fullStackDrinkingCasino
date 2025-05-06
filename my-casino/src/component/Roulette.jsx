@@ -1,6 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react';
 import './Roulette.css';
 
+const avatarColors = {};
+
+const getRandomColor = () => {
+  const colors = ['#FF6B6B', '#6BCB77', '#4D96FF', '#FFD93D', '#845EC2'];
+  return colors[Math.floor(Math.random() * colors.length)];
+};
+
 export default function Roulette() {
   const rowRef = useRef(null);
   const [bets, setBets] = useState({ red: [], green: [], blue: [] });
@@ -9,7 +16,6 @@ export default function Roulette() {
   const [losers, setLosers] = useState([]);
   const [rollResult, setRollResult] = useState(null);
   const [pendingRollData, setPendingRollData] = useState(null);
-
 
   useEffect(() => {
     const socket = new WebSocket('wss://fullstackdrinkingcasino-backend.onrender.com/');
@@ -154,11 +160,23 @@ export default function Roulette() {
             {bets[color].length === 0 ? (
               <p>No bets placed yet!</p>
             ) : (
-              bets[color].map((bet, index) => (
-                <div key={index} className="bet-item">
-                  <span>{bet.name}</span>: <span>{bet.mise} gorgées</span>
-                </div>
-              ))
+              bets[color].map((bet, index) => {
+                if (!avatarColors[bet.name]) {
+                  avatarColors[bet.name] = getRandomColor();
+                }
+                const avatarColor = avatarColors[bet.name];
+              
+                return (
+                  <div key={index} className="bet-item">
+                    <div className="avatar" style={{ backgroundColor: avatarColor }}>
+                      {bet.name.charAt(0).toUpperCase()}
+                    </div>
+                    <span className="bet-text">
+                      {bet.name}: <span>{bet.mise} gorgées</span>
+                    </span>
+                  </div>
+                );
+              })
             )}
           </div>
         ))}

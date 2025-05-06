@@ -111,7 +111,8 @@ function determineColor(roll) {
     { number: 8, color: 'blue' },
   ];
 
-  return cards[roll % 15].color; // Determine color based on roll index
+  const card = cards.find(c => c.number === roll % 15);
+  return card ? card.color : 'unknown';
 }
 
 // WebSocket connection handler
