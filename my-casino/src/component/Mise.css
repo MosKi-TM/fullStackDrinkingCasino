@@ -2,9 +2,9 @@
     max-width: 400px;
     margin: 50px auto;
     padding: 20px;
-    background: radial-gradient(circle at top, #111 0%, #222 100%);
+    background: radial-gradient(circle at top, #04772a 0%, #0a861f 100%);
     border-radius: 15px;
-    box-shadow: 0 0 25px rgba(255, 215, 0, 0.3);
+    border: 3px solid white;
     color: #fff;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align: center;
@@ -28,10 +28,54 @@
   }
   
   .mise-controls p {
-    font-size: 20px;
-    margin-bottom: 10px;
-    color: #ffd700;
+    font-size: 24px;
+    margin: 10px 0;
+    font-weight: bold;
+    background: linear-gradient(45deg, #ffd700, #ffa500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.8);
+    transition: all 0.3s ease;
   }
+
+  .stats-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  .stat-card {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid #fff;
+    border-radius: 12px;
+    padding: 12px 16px;
+    width: 100px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease, background 0.3s ease;
+  }
+  
+  .stat-card:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  .stat-label {
+    font-size: 14px;
+    color: #ffd700;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  
+  .stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+  }
+  
   
   .mise-controls button {
     margin: 5px;
@@ -43,12 +87,13 @@
     color: #fff;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
+    border: 2px solid white;
   }
   
   .mise-controls button:hover {
     background: #ffd700;
     color: #111;
-    transform: scale(1.1);
+    transform: scale(1. 1);
   }
   
   button {
@@ -61,6 +106,7 @@
     cursor: pointer;
     transition: all 0.3s ease-in-out;
     color: #fff;
+    border: 2px solid white;
   }
   
   button:nth-of-type(1) {
@@ -70,7 +116,7 @@
     background: green;
   }
   button:nth-of-type(3) {
-    background: royalblue;
+    background: rgb(21, 21, 21);
   }
   
   button:hover {
@@ -90,7 +136,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.6);
+    background-color: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -113,5 +159,31 @@
   .popup-window button {
     margin: 0.5rem;
     padding: 0.5rem 1rem;
+  }
+  
+  .timer-bar-container {
+    width: 100%;
+    height: 10px;
+    background-color: #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 15px;
+  }
+  
+  .timer-bar-fill {
+    height: 100%;
+    background-color: #e74c3c; /* red */
+    transition: width 1s linear;
+  }
+
+  .animated-scale {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+  
+  .reset-scale {
+    transform: scale(1);
+    opacity: 1;
   }
   

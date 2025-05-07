@@ -22,6 +22,8 @@ export default function Roulette({socket}) {
   const [pendingRollData, setPendingRollData] = useState(null);
   const [drinkResults, setDrinkResults] = useState({});
 
+ 
+
   useEffect(() => {
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -109,7 +111,7 @@ export default function Roulette({socket}) {
 
   return (
   <div className='game-wrapper'>
-    {Object.keys(drinkResults).length > 0 && <WinningBoard drinkData={drinkResults} />}
+    {Object.keys(drinkResults).length > 0 && <WinningBoard drinkData={drinkResults} setDrinkResults={setDrinkResults}/>}
 
     <div className="roulette-wrapper">
       <div className="selector"></div>

@@ -24,13 +24,18 @@ let bets = {
   blue: [],
 };
 
+let isSpinning = false;
+
 // Store pending selections
 let pendingSelections = {};
 let users = {}; // To track users by socket.id
 let clients = {};
 
 let storedData = loadData();
-
+storedData.users = [];
+storedData.clients = [];
+saveData(storedData);
+storedData.drinksCount
 // Helper function to broadcast updated bets to all WebSocket clients
 function broadcastBets() {
   const bets = readBets();
@@ -45,6 +50,7 @@ function broadcastBets() {
 
 // Function to broadcast roulette roll result along with winners and losers
 function broadcastRoll() {
+  isSpinning = true;
   const bets = readBets();
   const roll = Math.floor(Math.random() * 15); // Random number between 0 and 14
   const rollColor = determineColor(roll);
@@ -94,6 +100,7 @@ function broadcastRoll() {
 
 
   setTimeout(() => {
+    isSpinning = false;
     winners.forEach(winner => {
       const client = storedData.clients[winner.name]; // Assuming `clients` is a map of connected clients
       
@@ -132,19 +139,29 @@ function broadcastRoll() {
       const selected = storedData.pendingSelections[winner.name];
       if (selected) {
         scoreboard[selected] = (scoreboard[selected] || 0) + winner.mise;
+        storedData.drinksCount[selected] = (storedData.drinksCount[selected] || 0) + winner.mise;
       } else {
         // fallback: give drinks to yourself if no selection
         scoreboard[winner.name] = (scoreboard[winner.name] || 0) + winner.mise;
+        storedData.drinksCount[winner.name] = (storedData.drinksCount[winner.name] || 0) + winner.mise;
       }
     }
 
+    // Add drinks drunk by losers (they drink themselves)
+    for (const loser of losers) {
+      scoreboard[loser.name] = (scoreboard[loser.name] || 0) + loser.mise;
+      storedData.drinksCount[loser.name] =  (storedData.drinksCount[loser.name] || 0) + loser.mise;
+    }
+
+    saveData(storedData);
+
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify({ type: 'drinking', scoreboard }));
+        client.send(JSON.stringify({ type: 'drinking', scoreboard, drinksCount: storedData.drinksCount}));
       }
     });
 
-  }, 15000);
+  }, 21000);
 
   // Reset the bets after the round
   writeBets({ red: [], green: [], blue: [] });
@@ -191,7 +208,7 @@ wss.on('connection', (ws) => {
       const data = JSON.parse(message);
 
       if (data.type === 'set-username') {
-          storedData.users[data.username] = socketId; // Store the username
+          storedData.users[socketId] = data.username; // Store the username
           storedData.clients[data.username] = ws;
           saveData(storedData);
           console.log(`Username set for ${socketId}: ${data.username}`);
@@ -226,12 +243,17 @@ app.post('/mise', (req, res) => {
     return res.status(400).json({ message: 'Invalid color.' });
   }
 
-  const bets = readBets();
-  bets[couleur].push({ name, mise });
-  writeBets(bets);
-  broadcastBets();
+  if(!isSpinning){
 
-  return res.json({ message: 'Mise bien reçu', data: { name, mise, couleur } });
+    const bets = readBets();
+    bets[couleur].push({ name, mise });
+    writeBets(bets);
+    broadcastBets();
+
+    return res.json({ message: 'Mise bien reçu', data: { name, mise, couleur } });
+  }else{
+    return res.json({ message: 'Roulette En cours !', data: { name, mise, couleur } });
+  }
 });
 
 app.get('/spin', (req, res) => {
