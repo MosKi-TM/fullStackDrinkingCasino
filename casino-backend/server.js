@@ -32,10 +32,7 @@ let users = {}; // To track users by socket.id
 let clients = {};
 
 let storedData = loadData();
-storedData.users = [];
-storedData.clients = [];
-saveData(storedData);
-storedData.drinksCount
+
 // Helper function to broadcast updated bets to all WebSocket clients
 function broadcastBets() {
   const bets = readBets();
