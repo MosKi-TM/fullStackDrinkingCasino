@@ -22,7 +22,25 @@ export default function Roulette({socket}) {
   const [pendingRollData, setPendingRollData] = useState(null);
   const [drinkResults, setDrinkResults] = useState({});
 
- 
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [isTimerActive, setIsTimerActive] = useState(false);
+
+  useEffect(() => {
+    if (!isTimerActive || timeLeft <= 0) return;
+  
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setIsTimerActive(false);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  
+    return () => clearInterval(timer);
+  }, [isTimerActive, timeLeft]);
 
   useEffect(() => {
     socket.onmessage = (event) => {
@@ -32,6 +50,7 @@ export default function Roulette({socket}) {
       if (data.type === 'roll') {
         spinWheel(data.value, data);
         setDrinkResults({});
+        setIsTimerActive(false);
       }
 
       // Handle the bets update message
@@ -45,6 +64,8 @@ export default function Roulette({socket}) {
         console.log(data.scoreboard)
         setDrinkResults(data.scoreboard || {});
         console.log(drinkResults);
+        setTimeLeft(38);
+        setIsTimerActive(true);
       }
     };
 
@@ -112,6 +133,13 @@ export default function Roulette({socket}) {
   return (
   <div className='game-wrapper'>
     {Object.keys(drinkResults).length > 0 && <WinningBoard drinkData={drinkResults} setDrinkResults={setDrinkResults}/>}
+
+    <div className="timer-bar-container">
+      <div
+        className="timer-bar-fill"
+        style={{ width: `${(timeLeft / 40) * 100}%` }}
+      ></div>
+    </div>
 
     <div className="roulette-wrapper">
       <div className="selector"></div>

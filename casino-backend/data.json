@@ -3,7 +3,8 @@
     "zizi": 90,
     "caca": 176,
     "zizi bite": 25,
-    "zizicaca": 75
+    "zizicaca": 75,
+    "zizi caca": 20
   },
   "pendingSelections": {
     "test": "admin",
@@ -14,7 +15,8 @@
     "aaaa": null,
     "aaa": "zizi",
     "zizi bite": null,
-    "zizicaca": null
+    "zizicaca": null,
+    "zizi caca": null
   },
   "users": [],
   "clients": []

@@ -253,6 +253,8 @@ app.post('/mise', (req, res) => {
   }
 });
 
+setInterval(broadcastRoll, 61000)
+
 app.get('/spin', (req, res) => {
   broadcastRoll();
   return res.json({ message: 'Spinning the wheel' });
