@@ -27,6 +27,42 @@ export default function Roulette({socket}) {
 
   const [drinkCount, setDrinkCount] = useState({});
 
+  const [centerIndex, setCenterIndex] = useState(null);
+  const animationFrameRef = useRef();
+  
+  const startTrackingCenterCard = () => {
+    const row = rowRef.current;
+    if (!row) return;
+  
+    const cardWidth = 75 + 3 * 2;
+    const containerWidth = row.parentElement.offsetWidth;
+  
+    const update = () => {
+      // Extract current transform value
+      const transform = window.getComputedStyle(row).transform;
+      if (transform !== 'none') {
+        const matrix = new WebKitCSSMatrix(transform);
+        const translateX = Math.abs(matrix.m41);
+  
+        // Center of the container
+        const centerX = translateX + containerWidth / 2;
+  
+        // Determine which card is visually centered
+        const index = Math.floor(centerX / cardWidth);
+        setCenterIndex(index);
+      }
+  
+      animationFrameRef.current = requestAnimationFrame(update);
+    };
+  
+    cancelAnimationFrame(animationFrameRef.current);
+    animationFrameRef.current = requestAnimationFrame(update);
+  };
+  
+  const stopTrackingCenterCard = () => {
+    cancelAnimationFrame(animationFrameRef.current);
+  };
+
   useEffect(() => {
     if (!isTimerActive || timeLeft <= 0) return;
   
@@ -95,14 +131,22 @@ export default function Roulette({socket}) {
     const row = rowRef.current;
 
     if (row) {
+      startTrackingCenterCard();
       row.style.transitionTimingFunction = `cubic-bezier(0, ${bezier.x}, ${bezier.y}, 1)`;
       row.style.transitionDuration = '6s';
       row.style.transform = `translate3d(-${finalPosition}px, 0, 0)`;
 
       setTimeout(() => {
+        stopTrackingCenterCard();
         row.style.transitionTimingFunction = '';
         row.style.transitionDuration = '';
         const resetTo = -(position * cardWidth + randomize);
+
+        const containerWidth = row.parentElement.offsetWidth;
+        const centerX = Math.abs(resetTo) + containerWidth / 2;
+        const finalIndex = Math.floor(centerX / cardWidth);
+        setCenterIndex(finalIndex % repeatedCards.length); // Keep it big
+
         row.style.transform = `translate3d(${resetTo}px, 0, 0)`;
         console.log('update winners')
           setWinners(data.winners || []);
@@ -166,11 +210,14 @@ export default function Roulette({socket}) {
       <div className="selector"></div>
         <div className="wheel">
           <div className="row" ref={rowRef}>
-            {repeatedCards.map((card, index) => (
-              <div key={index} className={`card ${card.color}`}>
-                {card.number}
-              </div>
-            ))}
+          {repeatedCards.map((card, index) => (
+            <div
+              key={index}
+              className={`card ${card.color} ${index === centerIndex ? 'active' : ''}`}
+            >
+              {card.number}
+            </div>
+          ))}
           </div>
       </div>
 
