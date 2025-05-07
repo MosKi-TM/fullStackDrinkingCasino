@@ -70,6 +70,7 @@ export default function Roulette({socket}) {
         console.log(drinkResults);
         setTimeLeft(38);
         setIsTimerActive(true);
+        setRollResult(null)
       }
     };
 
@@ -163,47 +164,65 @@ export default function Roulette({socket}) {
 
     <div className="roulette-wrapper">
       <div className="selector"></div>
-      <div className="wheel">
-        <div className="row" ref={rowRef}>
-          {repeatedCards.map((card, index) => (
-            <div key={index} className={`card ${card.color}`}>
-              {card.number}
-            </div>
-          ))}
-        </div>
+        <div className="wheel">
+          <div className="row" ref={rowRef}>
+            {repeatedCards.map((card, index) => (
+              <div key={index} className={`card ${card.color}`}>
+                {card.number}
+              </div>
+            ))}
+          </div>
       </div>
 
       
     </div>
     {/* Display the bets */}
     <div className="bets-container">
-        {['red', 'green', 'blue'].map((color) => (
-          <div key={color} className={`bet-box ${color}`}>
-            <h3>Pari {frcolor[color]} </h3>
-            {bets[color].length === 0 ? (
-              <p>No bets placed yet!</p>
-            ) : (
-              bets[color].map((bet, index) => {
-                if (!avatarColors[bet.name]) {
-                  avatarColors[bet.name] = getRandomColor();
-                }
-                const avatarColor = avatarColors[bet.name];
-              
-                return (
-                  <div key={index} className="bet-item">
-                    <div className="avatar" style={{ backgroundColor: avatarColor }}>
-                      {bet.name.charAt(0).toUpperCase()}
-                    </div>
-                    <span className="bet-text">
-                      {bet.name}: <span>{bet.mise} gorgées</span>
-                    </span>
-                  </div>
-                );
-              })
-            )}
-          </div>
-        ))}
+  {['red', 'green', 'blue'].map((color) => {
+    const isWinningColor = rollResult?.color === color;
+    const isResultDisplayed = !!rollResult;
+    const isDrinking = Object.keys(drinkResults).length > 0;
+
+    const betBoxClass = `bet-box ${color} ${
+      isResultDisplayed && !isDrinking
+        ? isWinningColor
+          ? 'winner-highlight'
+          : 'blurred'
+        : ''
+    }`;
+
+    return (
+      <div key={color} className={betBoxClass}>
+        <h3>Pari {frcolor[color]} </h3>
+        {bets[color].length === 0 ? (
+          <p>No bets placed yet!</p>
+        ) : (
+          bets[color].map((bet, index) => {
+            if (!avatarColors[bet.name]) {
+              avatarColors[bet.name] = getRandomColor();
+            }
+            const avatarColor = avatarColors[bet.name];
+
+            return (
+              <div key={index} className="bet-item">
+                <div
+                  className="avatar"
+                  style={{ backgroundColor: avatarColor }}
+                >
+                  {bet.name.charAt(0).toUpperCase()}
+                </div>
+                <span className="bet-text">
+                  {bet.name}: <span>{bet.mise} gorgées</span>
+                </span>
+              </div>
+            );
+          })
+        )}
       </div>
+    );
+  })}
+</div>
+
     </div>
   );
 }

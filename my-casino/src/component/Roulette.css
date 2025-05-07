@@ -97,6 +97,26 @@
   border: 3px solid;
 }
 
+.bet-box {
+  transition: all 0.3s ease;
+  filter: none;
+  transform: scale(1);
+  opacity: 1;
+}
+
+.bet-box.blurred {
+  filter: blur(2px);
+  opacity: 0.4;
+}
+
+.bet-box.winner-highlight {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.7);
+  border: 2px solid gold;
+  z-index: 2;
+}
+
+
 .bet-box.red {
   background-color: rgba(255, 0, 0, 0.7);
   
