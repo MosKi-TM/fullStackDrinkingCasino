@@ -25,6 +25,8 @@ export default function Roulette({socket}) {
   const [timeLeft, setTimeLeft] = useState(0);
   const [isTimerActive, setIsTimerActive] = useState(false);
 
+  const [drinkCount, setDrinkCount] = useState({});
+
   useEffect(() => {
     if (!isTimerActive || timeLeft <= 0) return;
   
@@ -63,6 +65,8 @@ export default function Roulette({socket}) {
         console.log()
         console.log(data.scoreboard)
         setDrinkResults(data.scoreboard || {});
+        setDrinkCount(data.drinksCount ||{})
+        
         console.log(drinkResults);
         setTimeLeft(38);
         setIsTimerActive(true);
@@ -129,9 +133,25 @@ export default function Roulette({socket}) {
   ];
 
   const repeatedCards = Array.from({ length: 29 }, () => cards).flat();
-
+  
+  const topDrinkers = Object.entries(drinkCount)
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 5);
   return (
   <div className='game-wrapper'>
+    <div className="leaderboard">
+    <h3>Top 10 Buveurs</h3>
+    <ol>
+      {
+        
+      topDrinkers.map(([name, count], index) => (
+        <li key={index}>
+          {name}: {count} 🍻
+        </li>
+      ))}
+    </ol>
+  </div>
+
     {Object.keys(drinkResults).length > 0 && <WinningBoard drinkData={drinkResults} setDrinkResults={setDrinkResults}/>}
 
     <div className="timer-bar-container">

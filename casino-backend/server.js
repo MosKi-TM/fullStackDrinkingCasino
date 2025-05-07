@@ -260,6 +260,12 @@ app.get('/spin', (req, res) => {
   return res.json({ message: 'Spinning the wheel' });
 });
 
+app.get('/reset', (req, res) => {
+  storedData.drinksCount = {};
+  saveData(storedData);
+  return res.json({ message: 'resetDrink' });
+});
+
 server.listen(4000, () => {
   console.log('Server running on http://localhost:4000');
 });
