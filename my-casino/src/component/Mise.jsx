@@ -141,7 +141,7 @@ export default function Mise({ username, admin, socket }) {
       <button onClick={() => handleSend('green')}>Vert</button>
       <button onClick={() => handleSend('blue')}>Noir</button>
 
-      {admin && (
+      {false && (
         <div className="mise-controls">
           <button onClick={spinRoulette}>Spin Roulette</button>
         </div>

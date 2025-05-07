@@ -68,7 +68,7 @@ function App() {
             ) : (
                 <h2>Connecting...</h2>
             )}
-          {admin && <button onClick={() => {
+          {true && <button onClick={() => {
             handleSetUsername();
             setActivePage('roulette')}}>Accéder à la Roulette</button>}
           <button onClick={() => {
