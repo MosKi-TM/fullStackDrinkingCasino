@@ -122,6 +122,9 @@ function App() {
           <Mise username={username} admin={admin} socket={wsRef.current} />
         </>
       )}
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7830630657092103"
+     crossorigin="anonymous"></script>
     </div>
   );
 }
