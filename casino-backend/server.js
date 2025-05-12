@@ -172,7 +172,7 @@ function broadcastRoll() {
       broadcastBets()
       wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
-          client.send(JSON.stringify({ type: 'drinking', scoreboard:{}, drinksCount: {}}));
+          client.send(JSON.stringify({ type: 'drinking', scoreboard:{}, drinksCount: storedData.drinksCount}));
         }
       });
       setTimeout(broadcastRoll, 40000);
