@@ -94,75 +94,91 @@ function broadcastRoll() {
       client.send(message);
     }
   });
-
-
-  setTimeout(() => {
-    isSpinning = false;
-    winners.forEach(winner => {
-      const client = storedData.clients[winner.name]; // Assuming `clients` is a map of connected clients
-      
-      if (client) {
-        console.log('client send win');
   
-        // Create a set to collect unique player names who have placed bets
-        const playerSet = new Set();
+  if(winners.length > 0 || losers.length > 0){
+    setTimeout(() => {
+      isSpinning = false;
+      winners.forEach(winner => {
+        const client = storedData.clients[winner.name]; // Assuming `clients` is a map of connected clients
         
-        // Filter out bets with mise > 0 for each color and add the names to the set
-        Object.keys(mises).forEach(color => {
-          mises[color].forEach(bet => {
-            playerSet.add(bet.name); // Use Set to ensure names are unique
+        if (client) {
+          console.log('client send win');
+    
+          // Create a set to collect unique player names who have placed bets
+          const playerSet = new Set();
+          
+          // Filter out bets with mise > 0 for each color and add the names to the set
+          Object.keys(mises).forEach(color => {
+            mises[color].forEach(bet => {
+              playerSet.add(bet.name); // Use Set to ensure names are unique
+            });
           });
-        });
-        // Convert the set to an array for the player list
-        const playerList = Array.from(playerSet);
+          // Convert the set to an array for the player list
+          const playerList = Array.from(playerSet);
+    
+          // Send the player list to the client
+          client.send(JSON.stringify({ type: 'select_recipient', playerList }));
+    
+          // Clear pending selection for the winner
+          storedData.pendingSelections[winner.name] = null;
+    
+          // Save updated data to storage
+          saveData(storedData);
+        }
+      });
+    }, 6000);
   
-        // Send the player list to the client
-        client.send(JSON.stringify({ type: 'select_recipient', playerList }));
+    // Wait 15 seconds, then send result
+    setTimeout(() => {
+      // Reset the bets after the round
+      writeBets({ red: [], green: [], blue: [] });
+      broadcastBets();
+      const scoreboard = {};
   
-        // Clear pending selection for the winner
-        storedData.pendingSelections[winner.name] = null;
+      for (const winner of winners) {
+        const selected = storedData.pendingSelections[winner.name];
+        if (selected) {
+          scoreboard[selected] = (scoreboard[selected] || 0) + winner.mise;
+          storedData.drinksCount[selected] = (storedData.drinksCount[selected] || 0) + winner.mise;
+        } else {
+          // fallback: give drinks to yourself if no selection
+          scoreboard[winner.name] = (scoreboard[winner.name] || 0) + winner.mise;
+          storedData.drinksCount[winner.name] = (storedData.drinksCount[winner.name] || 0) + winner.mise;
+        }
+      }
   
-        // Save updated data to storage
-        saveData(storedData);
+      // Add drinks drunk by losers (they drink themselves)
+      for (const loser of losers) {
+        scoreboard[loser.name] = (scoreboard[loser.name] || 0) + loser.mise;
+        storedData.drinksCount[loser.name] =  (storedData.drinksCount[loser.name] || 0) + loser.mise;
       }
-    });
-  }, 6000);
-
-  // Wait 15 seconds, then send result
-  setTimeout(() => {
-    const scoreboard = {};
-
-    for (const winner of winners) {
-      const selected = storedData.pendingSelections[winner.name];
-      if (selected) {
-        scoreboard[selected] = (scoreboard[selected] || 0) + winner.mise;
-        storedData.drinksCount[selected] = (storedData.drinksCount[selected] || 0) + winner.mise;
-      } else {
-        // fallback: give drinks to yourself if no selection
-        scoreboard[winner.name] = (scoreboard[winner.name] || 0) + winner.mise;
-        storedData.drinksCount[winner.name] = (storedData.drinksCount[winner.name] || 0) + winner.mise;
-      }
-    }
-
-    // Add drinks drunk by losers (they drink themselves)
-    for (const loser of losers) {
-      scoreboard[loser.name] = (scoreboard[loser.name] || 0) + loser.mise;
-      storedData.drinksCount[loser.name] =  (storedData.drinksCount[loser.name] || 0) + loser.mise;
-    }
-
-    saveData(storedData);
-
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify({ type: 'drinking', scoreboard, drinksCount: storedData.drinksCount}));
-      }
-    });
-
-  }, 21000);
-
-  // Reset the bets after the round
-  writeBets({ red: [], green: [], blue: [] });
-  setTimeout(broadcastBets, 6000);
+  
+      saveData(storedData);
+  
+      wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify({ type: 'drinking', scoreboard, drinksCount: storedData.drinksCount}));
+        }
+      });
+      setTimeout(broadcastRoll, 40000);
+  
+    }, 21000);
+  
+    
+  }
+  else{
+    setTimeout(()=>{
+      isSpinning = false;
+      broadcastBets()
+      wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify({ type: 'drinking', scoreboard:{}, drinksCount: {}}));
+        }
+      });
+      setTimeout(broadcastRoll, 40000);
+    }, 6000);
+  }
+  
 }
 
 // Function to determine the color based on the roll value
@@ -253,7 +269,9 @@ app.post('/mise', (req, res) => {
   }
 });
 
-setInterval(broadcastRoll, 61000)
+
+
+broadcastRoll()
 
 app.get('/spin', (req, res) => {
   broadcastRoll();

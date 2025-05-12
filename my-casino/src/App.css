@@ -61,3 +61,25 @@ body {
 .read-the-docs {
   color: #888;
 }
+
+.home div input{
+  color: #FFFFFF;
+  border: 2px solid #FFFFFF;
+  background-color: #1e6b1e;
+  width: 90%;
+  height: 5vh;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.home div div{
+  display: flex;
+  justify-content: space-evenly;
+}
+.home{
+  width: 90%;
+}
+
+.home h1, .home h2{
+  color: #AAAAAA;
+}

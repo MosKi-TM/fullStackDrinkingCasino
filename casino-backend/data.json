@@ -1,9 +1,11 @@
 {
   "drinksCount": {
-
+    "zizi": 45,
+    "test": 20,
+    "zzz": 50
   },
   "pendingSelections": {
-    "test": "admin",
+    "test": null,
     "test12": "admin",
     "testaa": "aaaa",
     "caca": null,
@@ -12,7 +14,8 @@
     "aaa": "zizi",
     "zizi bite": null,
     "zizicaca": null,
-    "zizi caca": null
+    "zizi caca": null,
+    "zzz": null
   },
   "users": [],
   "clients": []
